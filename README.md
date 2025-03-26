@@ -11,13 +11,13 @@ The application is built in Kotlin and uses libraries for CSV parsing, JSON seri
 ## Features
 
 ### 1. **Maximum Distance from Start**:
-   - Calculates the maximum distance between the starting point (first waypoint) and all other waypoints in the dataset.
+   - Calculates the maximum distance between the starting point (see inputs(5)) and all other waypoints in the dataset.
 
 ### 2. **Most Frequented Area**:
    - Identifies the most frequented area based on waypoints that lie outside a geofence defined by a radius.
 
 ### 3. **Waypoints Outside Geofence**:
-   - Identifies how many waypoints are located outside a geofence, and lists those waypoints.
+   - Identifies how many waypoints are located outside the geofence of the central point, and lists those waypoints.
    
 ### 4. **Distance Calculation**:
    - The application calculates distances using latitude and longitude, approximating distances to kilometers by multiplying by a factor of 111.
@@ -26,7 +26,12 @@ The application is built in Kotlin and uses libraries for CSV parsing, JSON seri
    - The application reads data from two files:
      - `waypoints.csv`: Contains the data of waypoints (timestamp, latitude, longitude).
      - `custom-parameters.yml`: Contains a configuration for the radius of the geofence.
-   
+   - The application can also accept arguments, to set the central wayPoynt:
+     - they have to be exactly three;
+     - they have to be valid double values;
+     - they represent respectively the timestamp, the latitude and the longitude of the centre
+     - in any other cases, they are ignored with a warning message and the first point of the list is used as default value
+ 
 ### 6. **Output**:
    - The application generates a detailed `output_advanced.json` file containing:
      - **maxDistanceFromStart**: The maximum distance between the start and any waypoint.
@@ -84,6 +89,7 @@ conf:
   radius: 1.0  # Radius in kilometers for geofence
   unit: km     # Unit of distance (optional, currently supports 'km')
 ```
+They should be in a dedicated directory named evaluation
 
 ### 4. Run the Application Locally
 
@@ -92,9 +98,10 @@ To run the application locally, use the following command:
 ```bash
 java -jar build/libs/RouteAnalyzer-1.0-SNAPSHOT-all.jar
 ```
-
-Ensure that the path to the `custom-parameters.yml` and `waypoints.csv` are correctly set in the code.
-
+To run it with the arguments, use the following command:
+```bash
+java -jar build/libs/RouteAnalyzer-1.0-SNAPSHOT-all.jar centreTimestamp centreLatitude centreLongitude
+```
 ### 5. Run the Application with Docker
 
 To run the application using Docker, first build the Docker image and then run the container:
@@ -107,7 +114,7 @@ This command mounts the `waypoints.csv` and `custom-parameters.yml` from your ho
 
 ### 6. Output
 
-The application will generate a `output.json` file that will contain the calculated metrics. The JSON file will be saved in the container's file system or, if mounted correctly, in your project directory.
+The application will generate a `output.json` file that will contain the calculated metrics. The JSON file will be saved in the evaluation directory
 
 ## Output Format
 
