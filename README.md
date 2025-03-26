@@ -25,8 +25,11 @@ The application is built in Kotlin and uses libraries for CSV parsing, JSON seri
 ### 5. **Input**:
    - The application reads data from two files:
      - `waypoints.csv`: Contains the data of waypoints (timestamp, latitude, longitude).
-     - `custom-parameters.yml`: Contains a configuration for the radius of the geofence.
-   - The application can also accept arguments, to set the central wayPoynt:
+     - `custom-parameters.yml`: Contains a configuration for the radius of the geofence; it indicates:
+       - the value of the radius (in its own unit)
+       - the unit used for the radius
+       - the conversion factor to be used for the approximation of latitude and longitude
+   - The application can also accept arguments, to set the central waypoint:
      - they have to be exactly three;
      - they have to be valid double values;
      - they represent respectively the timestamp, the latitude and the longitude of the centre
@@ -36,7 +39,8 @@ The application is built in Kotlin and uses libraries for CSV parsing, JSON seri
    - The application generates a detailed `output_advanced.json` file containing:
      - **maxDistanceFromStart**: The maximum distance between the start and any waypoint.
      - **mostFrequentedArea**: The central waypoint with the most waypoints outside the geofence.
-     - **waypointsOutsideGeofence**: A list of waypoints outside the geofence with the count and details.
+     - **waypointsOutsideGeofence**: A list of waypoints outside the geofence with the count and details. 
+   - As requested in the specs, all the distances in the outputs are assumed as km
 
 ## Requirements
 
@@ -175,16 +179,71 @@ docker rm my-kotlin-app
 
 ## Optional Features
 
-Here are some additional features you can implement based on the data you have:
+In the end we introduce few optional functions:
+1. **Time Interval Between Waypoints:** Compute the total time between the waypoints, confronting the firs and the last point
+2. **Waypoint density:** Calculates the density of waypoints in the geofence of the central point
+3. **Bounding Box:** Compute the bonding box(the smallest square with sides parallel with the equator and the greenwich meridian) that contains all the waypoints; the square is represented by is vertices, starting from the top left and continuing clockwise, and an approximation of is area
+4. **Waypoint Cluster:** Find the waypoint that define with the give radius the most dense geofence.
 
-1. **Time Interval Between Waypoints**: Calculate and add the time differences between each consecutive waypoint.
-2. **Waypoint Density**: Compute the density of waypoints in a certain geographical area.
-3. **Bounding Box**: Calculate the bounding box (min/max latitude and longitude) that encapsulates all the waypoints.
-4. **Waypoint Clusters**: Implement clustering algorithms (e.g., DBSCAN) to detect areas with high density of waypoints.
-5. **Altitude**: If available, track and output the altitude changes over time.
-
-Feel free to add any additional features or modify the existing code to suit your needs.
-
+The results of those functions are encoded in a second json file called additionalOutput.json in the same directory of the previous one; a possible output:
+```json
+{
+     "timeIntervalBetweenWaypoints": {
+          "firstWayPoint": {
+               "timestamp": 0.0,
+               "latitude": 45.1234,
+               "longitude": 12.5678
+          },
+          "lastWayPoint": {
+               "timestamp": 0.0,
+               "latitude": 45.9876,
+               "longitude": 12.8765
+          },
+          "totalTime": 3600.5
+     },
+     "waypointDensity": {
+          "centre": {
+               "timestamp": 0.0,
+               "latitude": 45.6789,
+               "longitude": 12.3456
+          },
+          "radius": 5.0,
+          "pointsPerSquareKm": 10.2
+     },
+     "boundingBox": {
+          "pointA": {
+               "timestamp": 0.0,
+               "latitude": 45.0000,
+               "longitude": 12.0000
+          },
+          "pointB": {
+               "timestamp": 0.0,
+               "latitude": 45.0000,
+               "longitude": 13.0000
+          },
+          "pointC": {
+               "timestamp": 0.0,
+               "latitude": 46.0000,
+               "longitude": 13.0000
+          },
+          "pointD": {
+               "timestamp": 0.0,
+               "latitude": 46.0000,
+               "longitude": 12.0000
+          },
+          "area": 100.5
+     },
+     "waypointCluster": {
+          "centre": {
+               "timestamp": 0.0,
+               "latitude": 45.6789,
+               "longitude": 12.3456
+          },
+          "radius": 3.0,
+          "pointsPerSquareKm": 20.4
+     }
+}
+```
 ## Conclusion
 
 This Kotlin-based project processes waypoint data, calculates advanced geospatial metrics, and produces a JSON output. The application is packaged using Docker for easy deployment and can accept custom YAML configuration files during runtime. This setup allows for easy scaling and portability across different environments.
