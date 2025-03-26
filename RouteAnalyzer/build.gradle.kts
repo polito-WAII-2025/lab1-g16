@@ -15,6 +15,7 @@ repositories {
 dependencies {
     implementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation("org.yaml:snakeyaml:1.30")
     testImplementation(kotlin("test"))
 }
 

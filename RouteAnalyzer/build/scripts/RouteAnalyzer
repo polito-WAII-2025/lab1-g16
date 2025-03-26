@@ -112,7 +112,7 @@ case "$( uname )" in                #(
   NONSTOP* )        nonstop=true ;;
 esac
 
-CLASSPATH=$APP_HOME/lib/RouteAnalyzer-1.0-SNAPSHOT.jar:$APP_HOME/lib/kotlin-csv-jvm-1.9.0.jar:$APP_HOME/lib/kotlinx-coroutines-core-jvm-1.5.2.jar:$APP_HOME/lib/kotlin-stdlib-jdk8-1.8.0.jar:$APP_HOME/lib/kotlinx-serialization-core-jvm-1.6.0.jar:$APP_HOME/lib/kotlinx-serialization-json-jvm-1.6.0.jar:$APP_HOME/lib/kotlin-stdlib-jdk7-1.8.0.jar:$APP_HOME/lib/kotlin-stdlib-2.1.10.jar:$APP_HOME/lib/annotations-13.0.jar
+CLASSPATH=$APP_HOME/lib/RouteAnalyzer-1.0-SNAPSHOT.jar:$APP_HOME/lib/kotlin-csv-jvm-1.9.0.jar:$APP_HOME/lib/kotlinx-coroutines-core-jvm-1.5.2.jar:$APP_HOME/lib/kotlin-stdlib-jdk8-1.8.0.jar:$APP_HOME/lib/kotlinx-serialization-core-jvm-1.6.0.jar:$APP_HOME/lib/kotlinx-serialization-json-jvm-1.6.0.jar:$APP_HOME/lib/kotlin-stdlib-jdk7-1.8.0.jar:$APP_HOME/lib/kotlin-stdlib-2.1.10.jar:$APP_HOME/lib/snakeyaml-1.30.jar:$APP_HOME/lib/annotations-13.0.jar
 
 
 # Determine the Java command to use to start the JVM.
