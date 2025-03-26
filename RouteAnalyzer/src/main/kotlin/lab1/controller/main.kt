@@ -51,7 +51,7 @@ data class Configurazione(
 
 
 
-fun main() {
+fun main(args: Array<String>) {
 
     val file = File("../evaluation/waypoints.csv").readText()
     val points = csvReader{delimiter = ';'}.readAll(file).mapNotNull { row ->
@@ -71,12 +71,18 @@ fun main() {
     in reality, for the longitude it changes due to the curvature of the globe,
     but it is a fair approximation, especially in the tropical region
      */
-    //we use as a centre the first point of the list, while the radius is obtained by the file yml
+    //we use as a centre the first point of the list if not written in the args, while the radius is obtained by the file yml
     val inputStream = File("../evaluation/custom-parameters.yml").inputStream()
     val data: Map<String, Any> = Yaml().load(inputStream)
     val conf = data["conf"] as Map<String, Any>
     val radius = conf["radius"] as Double
-    val output = OutputJson(maxDistanceFromStart(points, points[0]), mostFrequentedArea(points, radius), waypointsOutsideGeofence(points, points[0], radius))
+    val centre;
+    if(args.isNotEmpty() || args.size<3){
+        centre = Point(args[0], args[1], args[2])
+    }else{
+        centre = points[0];
+    }
+    val output = OutputJson(maxDistanceFromStart(points, centre), mostFrequentedArea(points, radius), waypointsOutsideGeofence(points, centre, radius))
     val outputFile = File("../evaluation/output.json")
     outputFile.writeText(Json.encodeToString(output))
 }
