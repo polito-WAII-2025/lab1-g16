@@ -1,0 +1,26 @@
+# Geofence parameters
+geofence:
+  # The center of the geofence (latitude, longitude)
+  center:
+    latitude: 51.35116
+    longitude: 9.7542
+  # The radius of the geofence in kilometers
+  radius: 1.0
+
+# Optional: additional parameters you may want to include
+logging:
+  enabled: true
+  logLevel: "INFO"
+
+# Optional: parameters related to the waypoint processing
+waypoints:
+  # Define a threshold distance (in km) for considering a waypoint as valid
+  validDistanceThresholdKm: 0.5
+
+# Optional: time window (in seconds) for considering the time difference between consecutive waypoints
+timeWindowSeconds: 600  # 10 minutes
+
+# Optional: configuration for handling custom data
+customData:
+  param1: "value1"
+  param2: "value2"
