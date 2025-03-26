@@ -76,11 +76,20 @@ fun main(args: Array<String>) {
     val data: Map<String, Any> = Yaml().load(inputStream)
     val conf = data["conf"] as Map<String, Any>
     val radius = conf["radius"] as Double
-    val centre;
-    if(args.isNotEmpty() || args.size<3){
-        centre = Point(args[0], args[1], args[2])
-    }else{
-        centre = points[0];
+    var centre :Point = points[0]
+    println(args)
+    if(args.isNotEmpty()){
+        if(args.size!=3){
+            println("Invalid params: Expected 3 arguments, found ${args.size}")
+        }else {
+            try {
+                centre = Point(args[0].toDouble(), args[1].toDouble(), args[2].toDouble())
+            } catch (e: NumberFormatException) {
+                println("Invalid number format in params: ${e.message}")
+            } catch (e: Exception) {
+                println("An unexpected error occurred: ${e.message}")
+            }
+        }
     }
     val output = OutputJson(maxDistanceFromStart(points, centre), mostFrequentedArea(points, radius), waypointsOutsideGeofence(points, centre, radius))
     val outputFile = File("../evaluation/output.json")
@@ -101,7 +110,7 @@ fun maxDistanceFromStart(points: List<Point>, startingPoint: Point):MaxDistanceF
         var distance = distanceBetweenPoints(startingPoint, it)
         if(distance > maxDistance){maxDistance = distance}
     }
-    return MaxDistanceFromStart(startingPoint, distanceKm = maxDistance*111)
+    return MaxDistanceFromStart(startingPoint, distanceKm = maxDistance)
 }
 
 fun mostFrequentedArea(points: List<Point>, radius: Double):MostFrequentedArea{
@@ -110,19 +119,13 @@ fun mostFrequentedArea(points: List<Point>, radius: Double):MostFrequentedArea{
     points.forEach {
         if(waypointsOutsideGeofence(points, it, radius).count<externs){
             res = it
+            externs = waypointsOutsideGeofence(points, it, radius).count
         }
     }
     return MostFrequentedArea(res, radius, externs)
 }
 
-fun waypointsOutsideGeofence(points: List<Point>, centre: Point, radius: Double):WaypointsOutsideGeofence{
-    var i = 0;
-    var list = mutableListOf<Point>()
-    points.forEach {
-        if(distanceBetweenPoints(it, centre)>radius){
-            i++
-            list.add(it)
-        }
-    }
-    return WaypointsOutsideGeofence(centre, radius, i, list)
+fun waypointsOutsideGeofence(points: List<Point>, centre: Point, radius: Double): WaypointsOutsideGeofence {
+    val outsideList = points.filter { distanceBetweenPoints(it, centre) > radius }
+    return WaypointsOutsideGeofence(centre, radius, outsideList.size, outsideList)
 }
